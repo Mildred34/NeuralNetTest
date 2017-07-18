@@ -7,7 +7,7 @@ import zindach.mathlib.algebra.Vector;
 
 public class MNISTLoader {
 
-    public static Vector[] importData(String fileName) {
+    public static double[][] importData(String fileName) {
         try {
             System.out.println("\n---Importing MNIST data---\nfile: " + fileName);
             GZIPInputStream gzip = new GZIPInputStream(new FileInputStream(fileName));
@@ -27,29 +27,27 @@ public class MNISTLoader {
         } catch (IOException ex) {
             System.err.println("Error while reading file:\n" + ex);
         }
-        return new Vector[0];
+        return new double[0][];
     }
 
     private static int bytesToInt(byte[] bytes) {
         return ((bytes[0] & 0xFF) << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF));
     }
 
-    private static Vector[] importLabelFile(GZIPInputStream gzip) throws IOException {
+    private static double[][] importLabelFile(GZIPInputStream gzip) throws IOException {
         byte[] itemCountBytes = new byte[4];
         gzip.read(itemCountBytes);
         int itemCount = bytesToInt(itemCountBytes);
         System.out.println("item count: " + itemCount);
-        Vector[] data = new Vector[itemCount];
+        double[][] data = new double[10][itemCount];
         for (int i = 0; i < itemCount; i++) {
-            double[] vec = new double[10];
-            vec[gzip.read()] = 1.0;
-            data[i] = new Vector(vec);
+            data[gzip.read()][i] = 1.0;;
         }
         System.out.println("finished");
         return data;
     }
 
-    private static Vector[] importImageFile(GZIPInputStream gzip) throws IOException {
+    private static double[][] importImageFile(GZIPInputStream gzip) throws IOException {
         byte[] infoBytes = new byte[4];
         gzip.read(infoBytes);
         int itemCount = bytesToInt(infoBytes);
